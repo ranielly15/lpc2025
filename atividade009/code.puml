@@ -1,0 +1,59 @@
+@startuml AsteroidsCode
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+class Game {
+    + run()
+    - handle_events()
+    - draw_start_screen()
+    - draw_game()
+    - draw_gameover()
+}
+
+class World {
+    + update(dt, keys)
+    + draw(surface)
+    + reset()
+    - handle_collisions()
+    - spawn_asteroid()
+}
+
+class Ship {
+    + control(keys, dt)
+    + update(dt)
+    + fire()
+    + hyperspace()
+    + draw()
+}
+
+class UFO {
+    + update(dt)
+    + fire(ship_pos)
+}
+
+class Asteroid {
+    + update(dt)
+    + draw()
+}
+
+class Bullet {
+    + update(dt)
+    + draw()
+}
+
+class SoundManager {
+    + play_music()
+    + shoot_player
+    + ufo_big_shoot
+    + asteroid_hit
+}
+
+Game --> World
+World --> Ship
+World --> UFO
+World --> Asteroid
+World --> Bullet
+World --> SoundManager
+Ship --> Bullet
+UFO --> Bullet
+
+@enduml

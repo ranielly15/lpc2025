@@ -1,0 +1,37 @@
+@startuml AsteroidsContainer
+
+title Arquitetura do Jogo Asteroids (Modelo Container Simplificado)
+
+actor Jogador as player
+
+package "Asteroids Game" {
+
+    node "main.py\n(Ponto de entrada)\n- Inicializa o jogo\n- Chama Game().run()" as main
+
+    node "game.py\n(Engine principal)\n- Loop de jogo\n- HUD\n- Estados start/playing/gameover" as gameEngine
+
+    node "systems.py\n(Lógica do jogo)\n- Colisões\n- Pontuação e vidas\n- Spawns\n- Regras gerais" as world
+
+    node "sprites.py\n(Motor de entidades)\n- Ship\n- UFOs\n- Asteroides\n- Bullets\n- Física" as spriteEngine
+
+    node "sound.py\n(Gerenciador de Som)\n- Efeitos\n- Música (quando existir)\n- Mixer" as soundEngine
+
+    folder "assets/\nRecursos do jogo\n- Sprites\n- Sons\n- Fontes" as assets
+}
+
+' Relações
+player --> main : Executa o jogo
+
+main --> gameEngine : Instancia e inicia
+
+gameEngine --> world : Atualiza estado\ne consulta regras
+gameEngine --> soundEngine : Solicita sons gerais\n(HUD, eventos globais)
+gameEngine --> assets : Lê fontes e imagens
+
+world --> spriteEngine : Cria e atualiza entidades
+world --> soundEngine : Sons de colisões,\ntiros e mortes
+
+spriteEngine --> assets : Carrega sprites
+soundEngine --> assets : Carrega arquivos de áudio
+
+@enduml

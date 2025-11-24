@@ -25,10 +25,6 @@ class Jogador(pygame.sprite.Sprite):
         super().__init__()
         
         # ### CONTROLE DE TAMANHO ###
-        # Defina o quanto você quer aumentar o personagem.
-        # 2.0 = Dobro do tamanho
-        # 2.5 = 2.5x o tamanho
-        # 3.0 = Triplo do tamanho
         self.escala = 4.5 
         
         # --- Carregamento dos Sprites ---
@@ -46,7 +42,6 @@ class Jogador(pygame.sprite.Sprite):
             nova_altura = int(altura_original * self.escala)
             imagem_escalada = pygame.transform.scale(imagem, (nova_largura, nova_altura))
             
-            # Adiciona a imagem JÁ ESCALADA na lista
             self.anim_parado.append(imagem_escalada) 
             
         self.anim_correndo = []
@@ -79,8 +74,37 @@ class Jogador(pygame.sprite.Sprite):
 
             self.anim_pulando.append(imagem_escalada)
 
-        # Lista de atirando (vazia por enquanto)
-        self.anim_atirando = []
+        # ### MUDANÇA: Carregando os 2 sprites de "Atirar Parado" ###
+        self.anim_parado_atirando = []
+        for i in range(1, 3): # Carrega atirando1.png, atirando2.png
+            arquivo = f"atirando{i}.png"
+            imagem = pygame.image.load(os.path.join("sprites", arquivo)).convert()
+            imagem.set_colorkey(MAGENTA)
+            
+            # --- Bloco de Escala ---
+            largura_original = imagem.get_width()
+            altura_original = imagem.get_height()
+            nova_largura = int(largura_original * self.escala)
+            nova_altura = int(altura_original * self.escala)
+            imagem_escalada = pygame.transform.scale(imagem, (nova_largura, nova_altura))
+            
+            self.anim_parado_atirando.append(imagem_escalada)
+        
+        # Carregando os 11 sprites de "Atirar Correndo"
+        self.anim_correndo_atirando = []
+        for i in range(1, 12): # Carrega atirando_m1.png a atirando_m11.png
+            arquivo = f"atirando_m{i}.png"
+            imagem = pygame.image.load(os.path.join("sprites", arquivo)).convert()
+            imagem.set_colorkey(MAGENTA)
+            
+            # --- Bloco de Escala ---
+            largura_original = imagem.get_width()
+            altura_original = imagem.get_height()
+            nova_largura = int(largura_original * self.escala)
+            nova_altura = int(altura_original * self.escala)
+            imagem_escalada = pygame.transform.scale(imagem, (nova_largura, nova_altura))
+            
+            self.anim_correndo_atirando.append(imagem_escalada)
 
         # --- Variáveis de Estado e Animação ---
         self.frame_atual = 0 
@@ -124,18 +148,32 @@ class Jogador(pygame.sprite.Sprite):
         self.rect.x += self.vel_x
         
         # --- 4. Seleção de Animação (Máquina de Estado) ---
-        estado_anim = self.anim_parado
+        # (Esta lógica já está correta e vai funcionar agora que 
+        # a lista 'anim_parado_atirando' não está mais vazia)
+        
+        estado_anim = self.anim_parado # Define o padrão (parado)
         
         if self.pulando:
+            # (Prioridade 1: Pular)
             estado_anim = self.anim_pulando
+            
         elif self.atirando:
-            # Se a lista de atirar não estiver vazia, usa ela
-            if self.anim_atirando:
-                estado_anim = self.anim_atirando
-            else:
-                # Senão, usa 'parado' como substituto
-                estado_anim = self.anim_parado 
+            # (Prioridade 2: Atirar)
+            
+            if self.correndo and self.anim_correndo_atirando:
+                # Se estiver correndo E tiver a animação, use-a
+                estado_anim = self.anim_correndo_atirando
+            elif not self.correndo and self.anim_parado_atirando:
+                # Se estiver parado E tiver a animação 'parado_atirando', use-a
+                # (ISTO VAI FUNCIONAR AGORA)
+                estado_anim = self.anim_parado_atirando
+            elif self.anim_correndo_atirando:
+                # Fallback: Se estiver atirando mas não tiver a 'parado_atirando',
+                # use a 'correndo_atirando' como substituto
+                estado_anim = self.anim_correndo_atirando
+            
         elif self.correndo:
+            # (Prioridade 3: Apenas Correr)
             estado_anim = self.anim_correndo
             
         # --- 5. Chamar a função de Animar ---
@@ -145,53 +183,38 @@ class Jogador(pygame.sprite.Sprite):
         """ Controla a troca de frames (imagens). """
         agora = pygame.time.get_ticks()
         
-        # Verifica se já passou tempo suficiente para o próximo frame
         if agora - self.ultimo_update > self.velocidade_anim:
             self.ultimo_update = agora
-            
-            # Avança para o próximo frame
             self.frame_atual = (self.frame_atual + 1) % len(lista_animacao)
             
-            # Pega a nova imagem da lista de animação
             imagem_nova = lista_animacao[self.frame_atual]
-            
-            # Preserva o centro do personagem para a animação não "pular" de lugar
             centro_antigo = self.rect.center
             
-            # Vira a imagem (flip) se estiver olhando para a esquerda
             if not self.olhando_direita:
-                # vira no eixo X (True), não vira no eixo Y (False)
                 imagem_nova = pygame.transform.flip(imagem_nova, True, False) 
                 
-            # Define a nova imagem e atualiza o retângulo
             self.image = imagem_nova
             self.rect = self.image.get_rect()
-            
-            # Restaura a posição do centro
             self.rect.center = centro_antigo
 
             
     def pular(self):
         """ Executa a ação de pular. """
-        # Só pode pular se NÃO estiver pulando (ou seja, se estiver no chão)
         if not self.pulando:
             self.vel_y = self.forca_pulo
             self.pulando = True
 
 # --- 3. Criação dos Objetos (Antes do Loop) ---
 
-# Cria o nosso personagem! (Chama o __init__ da classe Jogador)
 jogador = Jogador() 
 
 # --- 4. Loop Principal do Jogo ---
 rodando = True
 while rodando:
-    # Garante que o jogo rode no máximo a 60 FPS
     clock.tick(FPS) 
 
     # --- 4a. Processamento de Eventos (Inputs) ---
     for evento in pygame.event.get():
-        # Evento: Clicar no "X" de fechar a janela
         if evento.type == pygame.QUIT:
             rodando = False
         
@@ -199,48 +222,41 @@ while rodando:
         if evento.type == pygame.KEYDOWN:
             if evento.key == pygame.K_SPACE: # Pressionou Espaço
                 jogador.pular()
-            if evento.key == pygame.K_z: # Pressionou 'Z' (para atirar)
+            
+            # ### MUDANÇA: Tecla de atirar = 'W' ###
+            if evento.key == pygame.K_w: 
                 jogador.atirando = True
                 jogador.frame_atual = 0 # Reinicia a animação para o frame 0
                 
         # Evento: TECLA SOLTA
         if evento.type == pygame.KEYUP:
-            if evento.key == pygame.K_z:
+            
+            # ### MUDANÇA: Tecla de atirar = 'W' ###
+            if evento.key == pygame.K_w:
                 jogador.atirando = False # Para de atirar
 
     # --- 4b. Checagem de Teclas (para movimento contínuo) ---
-    # Isso detecta se a tecla está SENDO SEGURADA
     teclas = pygame.key.get_pressed()
     
     if teclas[pygame.K_LEFT]: # Seta Esquerda
-        jogador.vel_x = -5 # Define a velocidade horizontal
+        jogador.vel_x = -5 
         jogador.correndo = True
-        jogador.olhando_direita = False # Vira para a esquerda
+        jogador.olhando_direita = False
     elif teclas[pygame.K_RIGHT]: # Seta Direita
         jogador.vel_x = 5
         jogador.correndo = True
-        jogador.olhando_direita = True # Vira para a direita
+        jogador.olhando_direita = True
     else:
-        # Se não estiver pressionando nem esquerda nem direita
         jogador.vel_x = 0
         jogador.correndo = False
 
     # --- 4c. Atualização da Lógica ---
-    # Chama o método 'update()' do jogador (que roda a gravidade, animar, etc.)
     jogador.update() 
 
     # --- 4d. Renderização (Desenho) - A ORDEM IMPORTA! ---
-    
-    # 1. Limpa a tela (preenche com preto)
     tela.fill(PRETO)
-    
-    # 2. Desenha o jogador na tela
-    # Desenha a 'jogador.image' atual na posição 'jogador.rect'
     tela.blit(jogador.image, jogador.rect)
-    
-    # 3. Atualiza a tela para mostrar o que foi desenhado
     pygame.display.flip()
 
 # --- 5. Finalização ---
-# Sai do Pygame quando o loop 'while rodando:' termina
-pygame.quit() 
+pygame.quit()

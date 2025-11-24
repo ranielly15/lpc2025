@@ -1,0 +1,15 @@
+@startuml AsteroidsContext
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(player, "Jogador", "Pessoa que joga o Asteroids")
+
+System(asteroids, "Asteroids Game", "Jogo arcade 2D desenvolvido em Python + Pygame")
+
+System_Ext(os, "Sistema Operacional", "Windows / Linux / macOS")
+System_Ext(pygameLib, "Biblioteca Pygame", "Framework gráfico e de áudio utilizado pelo jogo")
+
+Rel(player, asteroids, "Joga usando teclado")
+Rel(asteroids, os, "Executa sobre")
+Rel(asteroids, pygameLib, "Utiliza recursos de áudio, vídeo e entrada")
+
+@enduml

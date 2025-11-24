@@ -1,0 +1,38 @@
+@startuml AsteroidsComponent
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container(gameEngine, "Game Engine (game.py)", "Python") {
+    Component(GameLoop, "Game Loop", "Classe Game", "Controle de estado, input, renderização")
+    Component(StartScreen, "Start Screen", "Renderização", "Tela inicial do jogo")
+    Component(GameOverScreen, "Game Over Screen", "Renderização", "Tela final do jogo")
+}
+
+Container(world, "World Engine (systems.py)", "Python") {
+    Component(WorldClass, "World", "Classe", "Regras, colisões, score, vidas")
+    Component(Spawner, "Spawner", "Funções internas", "Cria UFOs, asteroides iniciais")
+    Component(CollisionSystem, "Collision System", "Lógica", "Checa colisões e mortes")
+}
+
+Container(spriteEngine, "Sprite Engine (sprites.py)", "Python") {
+    Component(Ship, "Ship", "Classe", "Movimentação, tiro, invulnerabilidade")
+    Component(UFO, "UFO", "Classe", "Movimento, tiro, IA simples")
+    Component(Asteroid, "Asteroid", "Classe", "Movimento e divisão")
+    Component(Bullet, "Bullet", "Classe", "Movimento e TTL")
+}
+
+Container(soundEngine, "Sound Manager (sound.py)", "Python") {
+    Component(SoundManager, "SoundManager", "Classe", "Carrega e toca todos os sons")
+}
+
+Rel(GameLoop, WorldClass, "Atualiza / desenha")
+Rel(GameLoop, SoundManager, "Toca sons globais")
+Rel(WorldClass, CollisionSystem, "Executa colisões")
+Rel(WorldClass, Ship, "Cria e atualiza")
+Rel(WorldClass, UFO, "Gerencia")
+Rel(WorldClass, Asteroid, "Gerencia")
+Rel(WorldClass, Bullet, "Gerencia")
+Rel(WorldClass, SoundManager, "Toca efeitos sonoros")
+Rel(Ship, Bullet, "Dispara")
+Rel(UFO, Bullet, "Dispara")
+
+@enduml
