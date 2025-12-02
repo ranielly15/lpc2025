@@ -15,3 +15,10 @@ TOP_BORDER_THICKNESS = BORDER_THICKNESS + 30
 
 SCALE_FACTOR = 2.0
 NPC_SCALE = 2.0   
+
+# Cores do Menu e Fallback
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+BUTTON_COLOR = (70, 130, 180)       # Azul aço
+BUTTON_HOVER_COLOR = (100, 149, 237) # Azul mais claro
+BACKGROUND_COLOR = (30, 30, 30)     # Cor de fundo caso a imagem não carregue

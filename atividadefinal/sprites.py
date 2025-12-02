@@ -117,10 +117,9 @@ class Entity(pygame.sprite.Sprite):
 # =====================================================
 # PLAYER
 # =====================================================
-# (mesmo conteúdo anterior, apenas destacado o trecho alterado)
-
 class Player(Entity):
-    def __init__(self, x, y, groups):
+    # Parâmetro manual_control permite que o player seja controlado por IA no menu
+    def __init__(self, x, y, groups, manual_control=True):
         super().__init__(
             x, y,
             speed=150,
@@ -129,6 +128,8 @@ class Player(Entity):
             frame_w=48, frame_h=48,
             groups=groups
         )
+        
+        self.manual_control = manual_control
 
         # ANIMAÇÕES ADICIONAIS
         self.anim_hurt = load_hurt_two_frames("assets/sprites/caramel/Hurt.png", 48, 48)
@@ -205,21 +206,23 @@ class Player(Entity):
         # -----------------------
         # CONTROLE DO JOGADOR
         # -----------------------
-        keys = pygame.key.get_pressed()
-        self.dx = (keys[pygame.K_d] - keys[pygame.K_a])
-        self.dy = (keys[pygame.K_s] - keys[pygame.K_w])
+        # Só lê o teclado se o controle manual estiver ativado
+        if self.manual_control:
+            keys = pygame.key.get_pressed()
+            self.dx = (keys[pygame.K_d] - keys[pygame.K_a])
+            self.dy = (keys[pygame.K_s] - keys[pygame.K_w])
+        
+            # Normalização
+            if self.dx != 0 or self.dy != 0:
+                mag = max(1, (self.dx*self.dx + self.dy*self.dy)**0.5)
+                self.dx /= mag
+                self.dy /= mag
 
-        # Normalização
-        if self.dx != 0 or self.dy != 0:
-            mag = max(1, (self.dx*self.dx + self.dy*self.dy)**0.5)
-            self.dx /= mag
-            self.dy /= mag
-
-        # HANDLING DA ORIENTAÇÃO
-        if self.dx < 0:
-            self.facing_left = True
-        if self.dx > 0:
-            self.facing_left = False
+            # HANDLING DA ORIENTAÇÃO
+            if self.dx < 0:
+                self.facing_left = True
+            if self.dx > 0:
+                self.facing_left = False
 
         # Movimentar
         self.move(dt)
@@ -232,8 +235,6 @@ class Player(Entity):
             self.set_anim(self.anim_idle)
 
         self.animate(dt)
-
-
 
 
 # =====================================================
