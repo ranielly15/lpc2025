@@ -1,0 +1,32 @@
+@startuml CaramelComponent
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+Container(gameCore, "Game Loop", "Python/Pygame") {
+    Component(gameClass, "Game", "Classe Python", "Controla menus, fases, pontuação, colisões e atualização geral")
+    Component(spawnSystem, "Spawn System", "Funções internas", "Gera NPCs e galinhas por fase")
+    Component(menuSystem, "Menu UI", "Lógica interna", "Controla tela inicial e botão Play")
+    Component(collisionSystem, "Collision Handler", "Interno", "Detecta colisões Player/NPC/Chicken")
+    Component(phaseSystem, "Phase Manager", "Interno", "Avança fases e controla timers")
+}
+
+Container(spriteSystem, "Sprites") {
+    Component(playerClass, "Player", "Classe pygame.sprite.Sprite", "Movimento, latido, hit/hurt, limites")
+    Component(dobermanClass, "DobermannNPC", "NPC perseguidor", "Segue Player")
+    Component(blackCatClass, "BlackCatNPC", "NPC com comportamento aleatório")
+    Component(orangeCatClass, "OrangeCatNPC", "NPC com comportamento leve")
+    Component(chickenClass, "Chicken", "Coletável", "Gera pontos ao colidir")
+}
+
+Container(soundManager, "Áudio") {
+    Component(soundClass, "SoundManager", "Classe Python", "Gerencia efeitos, música, volumes e cooldowns")
+}
+
+Rel(gameClass, playerClass, "Atualiza posição, colisões e estado")
+Rel(gameClass, soundClass, "Play de sons")
+Rel(gameClass, spawnSystem, "Gerar fase")
+Rel(gameClass, collisionSystem, "Detecta colisões")
+Rel(gameClass, phaseSystem, "Avança fases")
+Rel(playerClass, soundClass, "Toca latido e dano")
+Rel(dobermanClass, playerClass, "Segue o jogador")
+
+@enduml

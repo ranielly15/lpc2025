@@ -1,0 +1,60 @@
+@startuml CaramelCode
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+class Game {
+    + run()
+    + reset_game()
+    + reset_phase()
+    + next_phase()
+    + draw_menu()
+    + apply_bark_knockback()
+    + handle_chicken_collisions()
+    + handle_player_entity_collisions()
+}
+
+class Player {
+    - x : float
+    - y : float
+    - dx : int
+    - dy : int
+    - is_barking : bool
+    - is_hurt : bool
+    + update(dt)
+    + bark()
+    + hurt()
+    + set_bounds()
+}
+
+class DobermannNPC {
+    - speed : float
+    + update(dt)
+}
+
+class BlackCatNPC {
+    + update(dt)
+}
+
+class OrangeCatNPC {
+    + update(dt)
+}
+
+class Chicken {
+    + update(dt)
+}
+
+class SoundManager {
+    + play_player_bark()
+    + play_player_hurt()
+    + play_hiss()
+    + update()
+}
+
+Game --> Player
+Game --> SoundManager
+Game --> DobermannNPC
+Game --> BlackCatNPC
+Game --> OrangeCatNPC
+Game --> Chicken
+Player --> SoundManager
+
+@enduml

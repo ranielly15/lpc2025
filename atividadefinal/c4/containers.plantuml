@@ -1,0 +1,20 @@
+@startuml CaramelContainer
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(player, "Jogador", "Usuário que joga")
+
+Container(gameCore, "Game Loop", "Python / Pygame", "Gerencia estados, fases, colisões, input e lógica principal")
+Container(spriteSystem, "Sprites e IA", "Python / Pygame", "Gerencia Player, NPCs e update de movimento")
+Container(soundManager, "Gerenciador de Som", "Pygame Mixer", "Toca efeitos e música")
+Container(configModule, "Configurações", "Python", "Define constantes e parâmetros do jogo")
+Container(assets, "Assets (imagens e sons)", "Arquivo", "Spritesheet, background, sons")
+Container(mainLauncher, "Launcher", "Python", "Inicia o jogo e executa Game.run()")
+
+Rel(player, gameCore, "Interação humana")
+Rel(gameCore, spriteSystem, "Atualiza e desenha sprites")
+Rel(gameCore, soundManager, "Requisita sons")
+Rel(gameCore, configModule, "Lê constantes")
+Rel(gameCore, assets, "Carrega sprites e sons")
+Rel(mainLauncher, gameCore, "Cria instância e executa loop")
+
+@enduml

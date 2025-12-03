@@ -1,0 +1,15 @@
+@startuml CaramelContext
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+Person(player, "Jogador", "Pessoa que joga Caramel Adventures")
+
+System(game, "Caramel Adventures", "Jogo Pygame que controla fases, pontuação, colisões e IA dos inimigos")
+
+System_Ext(soundSystem, "Sistema de Áudio (Pygame Mixer)", "Reproduz efeitos sonoros e trilha do jogo")
+System_Ext(fileSystem, "Sistema de Arquivos", "Carrega sprites, imagens, sons e configurações")
+
+Rel(player, game, "Controla via teclado/mouse")
+Rel(game, soundSystem, "Toca sons e música")
+Rel(game, fileSystem, "Carrega assets")
+
+@enduml
