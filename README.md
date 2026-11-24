@@ -4,12 +4,12 @@ Este repositório reúne códigos, exercícios e projetos desenvolvidos durante 
 
 O objetivo é documentar minha evolução no entendimento de algoritmos, estruturas de dados e fundamentos de desenvolvimento de software.
 
-## 🛠️ Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 
 * ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) **Python:** Foco em automação, manipulação de dados e scripts rápidos.
 * **Git/GitHub:** Controle de versão e organização de projetos.
 
-## 📂 Estrutura do Repositório
+##  Estrutura do Repositório
 
 O repositório está organizado por tópicos de estudo:
 
@@ -17,7 +17,7 @@ O repositório está organizado por tópicos de estudo:
 - **/projetos**: Pequenas aplicações e desafios práticos.
 - **/algoritmos**: Implementações de algoritmos de busca e ordenação.
 
-## 🚀 Destaques de Aprendizado
+##  Destaques de Aprendizado
 
 Durante a construção deste repositório, estou focando nos seguintes conceitos:
 
